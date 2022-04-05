@@ -4,45 +4,27 @@
 
 # Libraries
 
-
 import time
-
 from time import perf_counter
-
 import subprocess
-
 import os
-
 import os.path
-
 import fnmatch
-
 import qrcode
-
 import qrtools
-
 import binascii
-
 import cv2
-
 import numpy as np
-
 from os.path import isfile, join
-
 from decimal import Decimal as D
-
 from pathlib import Path
-
 from PIL import Image
-
 from pyzbar.pyzbar import decode
-
 import sys
-
 import magic
-
 import threading
-
+import binascii
+import numpy as np
 
 #        from zipfile import ZipFile
 
@@ -95,16 +77,14 @@ def Banner():
 #        return
 
 
-def Hex(nz):
-    import qrcode
-    import qrtools
+def Hex(file_to_convert):
 
     Banner()
-    import binascii
 
-    index = nz.find(".")
 
-    filename = nz
+    index = file_to_convert.find(".")
+
+    filename = file_to_convert
     if filename == "":
         return
     # remove file extension
@@ -134,22 +114,19 @@ def threadz(payload, location):
 
 
 # converts hex text file to qr images
-def QRmake(nz):
-    from decimal import Decimal as D
-    import qrcode
-    import qrtools
-    from PIL import Image
+def QRmake(file_to_convert):
+
 
     # from resizeimage import resizeimage
     Banner()
     global start_time
 
     # Prompt for file name and directtory name
-    index = nz.find(".")
-    filename = "HEX" + nz[:index] + ".txt"
+    index = file_to_convert.find(".")
+    filename = "HEX" + file_to_convert[:index] + ".txt"
     if filename == "":
         return
-    directoryName = "QR_" + nz[:index] + ""
+    directoryName = "QR_" + file_to_convert[:index] + ""
     print(directoryName)
     if directoryName == "":
         return
@@ -244,16 +221,12 @@ def QRmake(nz):
 
 
 def QRread():
-    from decimal import Decimal as D
-    import qrtools
 
     # delete orifianl hex file
     # os.system("rm '" + filename+"'")
     print("Finished")
     Pause()
     return
-
-    import qrcode
 
     Banner()
 
@@ -272,16 +245,13 @@ def QRread():
 
 
 # reconstruce file from folder
-def QRassemble(nz):
-    from decimal import Decimal as D
-    import qrtools
-    import qrcode
-    from os.path import isfile, join
+def QRassemble(file_to_convert):
+
 
     Banner()
-    index = nz.find(".")
-    fileName = nz[:index] + "_assemble.txt"
-    path = nz[:index] + "_Deconstructed"
+    index = file_to_convert.find(".")
+    fileName = file_to_convert[:index] + "_assemble.txt"
+    path = file_to_convert[:index] + "_Deconstructed"
     # path = "QR_" +nz[:index]
     if path == "":
         return
@@ -353,8 +323,7 @@ def QRassemble(nz):
 
 
 # deconstruct video file to QR bank
-def MMbreak(nz):
-    import cv2
+def MMbreak(file_to_convert):
 
     Banner()
 
@@ -369,13 +338,13 @@ def MMbreak(nz):
     if fnmatch.fnmatch(entry, pattern2):
         # print(entry)
         count += 1
-    index = nz.find(".")
-    file = nz[:index] + ".avi"
+    index = file_to_convert.find(".")
+    file = file_to_convert[:index] + ".avi"
 
     # check for empty value
     if file == "":
         return
-    directoryName = "" + nz[:index] + "_Deconstructed"
+    directoryName = "" + file_to_convert[:index] + "_Deconstructed"
     if directoryName == "":
         return
     # make a directory to put the image files into
@@ -408,10 +377,10 @@ def MMbreak(nz):
 
 
 # convert reassembled hex file to orginal file type
-def Hex2Bi(nz):
+def Hex2Bi(file_to_convert):
     Banner()
-    index = nz.find(".")
-    fileName = nz[:index] + "_assemble.txt"
+    index = file_to_convert.find(".")
+    fileName = file_to_convert[:index] + "_assemble.txt"
     # fileName = "HEX"+nz[:index] + ".txt"
 
     if fileName == "":
@@ -432,7 +401,7 @@ def Hex2Bi(nz):
     os.system("mv " + new + " " + new + "." + x)
     # Delete folder and assemble file
     os.system("rm " + fileName)
-    os.system("rm -rf " + nz[:index] + "_Deconstructed")
+    os.system("rm -rf " + file_to_convert[:index] + "_Deconstructed")
     print("File reconstructed!")
     end_time = perf_counter()
     print(f"It took {end_time- start_time: 0.2f} second(s) to complete.")
@@ -444,18 +413,15 @@ def Hex2Bi(nz):
 
 
 # NEW 2021 convert images to video
-def newVideo(nz):
-    import cv2
-    import numpy as np
-    import os
-    from os.path import isfile, join
+def newVideo(file_to_convert):
+
 
     Banner()
-    index = nz.find(".")
+    index = file_to_convert.find(".")
     # path = raw_input("Enter folder name of QR images you wish to turn into a movie: ")
-    pathIn = "./" + "QR_" + nz[:index] + "/"
+    pathIn = "./" + "QR_" + file_to_convert[:index] + "/"
     print("test")
-    pathOut = nz[:index] + ".avi"
+    pathOut = file_to_convert[:index] + ".avi"
     fps = 1
 
     frame_array = []
@@ -484,9 +450,9 @@ def newVideo(nz):
         out.write(frame_array[i])
     out.release()
     # delete folder of images
-    os.system("rm " + "HEX" + nz[:index] + ".txt")
-    os.system("rm -r 'QR_" + nz[:index] + "'")
-    print("Video Done! Saved as " + nz[:index] + ".avi")
+    os.system("rm " + "HEX" + file_to_convert[:index] + ".txt")
+    os.system("rm -r 'QR_" + file_to_convert[:index] + "'")
+    print("Video Done! Saved as " + file_to_convert[:index] + ".avi")
     end_time = perf_counter()
     print(f"It took {end_time- start_time: 0.2f} second(s) to complete.")
     Pause()
