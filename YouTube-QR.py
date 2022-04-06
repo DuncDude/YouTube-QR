@@ -40,6 +40,7 @@ x = 10
 b = 0
 path = 0
 star_time = 0
+HEX_CHARACTER_INCREMENT = 1000
 
 # Pause Function
 def Pause():
@@ -151,7 +152,7 @@ def QRmake(file_to_convert):
     while counter < fileChar:
         Banner()
         # make  the  amount of data to be encoded
-        data_to_be_encoded = counter + 1000
+        data_to_be_encoded = counter + HEX_CHARACTER_INCREMENT
         if data_to_be_encoded > fileChar:
             data_to_be_encoded = fileChar
         # calculate the percentage done
@@ -174,7 +175,7 @@ def QRmake(file_to_convert):
         # img.save(location)
 
         # adjust variables0
-        counter += 1000
+        counter += HEX_CHARACTER_INCREMENT
         name += 1
         nameCount += 1
         t1 = threading.Thread(
@@ -186,7 +187,7 @@ def QRmake(file_to_convert):
         )
 
         print("File made: i" + str(name) + ".png")
-        data_to_be_encoded = counter + 1000
+        data_to_be_encoded = counter + HEX_CHARACTER_INCREMENT
         if data_to_be_encoded > fileChar:
             data_to_be_encoded = fileChar
         # calculate the percentage done
@@ -353,7 +354,7 @@ def MMbreak(file_to_convert):
     vidcap = cv2.VideoCapture(file)
 
     def getFrame(sec):
-        vidcap.set(cv2.CAP_PROP_POS_MSEC, sec * 1000)
+        vidcap.set(cv2.CAP_PROP_POS_MSEC, sec * HEX_CHARACTER_INCREMENT)
         hasFrames, image = vidcap.read()
         if hasFrames:
             cv2.imwrite(
