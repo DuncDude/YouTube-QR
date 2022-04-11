@@ -26,6 +26,8 @@ import threading
 import binascii
 import numpy as np
 
+
+
 #        from zipfile import ZipFile
 
 
@@ -115,6 +117,7 @@ def threadz(payload, location):
 
 
 # converts hex text file to qr images
+@roc.jit
 def QRmake(file_to_convert):
 
 
@@ -178,13 +181,7 @@ def QRmake(file_to_convert):
         counter += HEX_CHARACTER_INCREMENT
         name += 1
         nameCount += 1
-        t1 = threading.Thread(
-            target=threadz,
-            args=(
-                payload,
-                location,
-            ),
-        )
+
 
         print("File made: i" + str(name) + ".png")
         data_to_be_encoded = counter + HEX_CHARACTER_INCREMENT
@@ -204,9 +201,13 @@ def QRmake(file_to_convert):
 
         # Create the file  and save it
         realname = str(nameCount) + ".png"
-        location = "'" + directoryName + "'/i" + realname
+        location =  directoryName + "/i" + realname
+        print(location)
+        img = qrcode.make(payload)
+        type(img)
+        img.save(location)
 
-        os.system("qr '" + payload + "' > " + location)
+        # os.system("qr '" + payload + "' > " + location)
         # img.save(location)
 
     # convert all pictures to the same size
